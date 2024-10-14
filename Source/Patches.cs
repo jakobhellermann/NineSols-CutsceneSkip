@@ -1,19 +1,45 @@
-﻿using HarmonyLib;
+﻿using System;
+using HarmonyLib;
+using UnityEngine;
 
 namespace CutsceneSkip;
 
 [HarmonyPatch]
 public class Patches {
-
-    // Patches are powerful. They can hook into other methods, prevent them from runnning,
-    // change parameters and inject custom code.
-    // Make sure to use them only when necessary and keep compatibility with other mods in mind.
-    // Documentation on how to patch can be found in the harmony docs: https://harmony.pardeike.net/articles/patching.html
-    [HarmonyPatch(typeof(Player), nameof(Player.SetStoryWalk))]
+    /*[HarmonyPatch(typeof(Timer),
+        nameof(Timer.AddTask),
+        [typeof(Timer), typeof(Action), typeof(float), typeof(MonoBehaviour), typeof(string)])]
     [HarmonyPrefix]
-    private static bool PatchStoryWalk(ref float walkModifier) {
-        walkModifier = 1.0f;
+    private static bool AddTask(ref Action misson) {
+        if (!CutsceneSkip.SkippingCutscene) return true;
 
-        return true; // the original method should be executed
+        misson();
+        return false;
+    }
+
+    [HarmonyPatch(typeof(Timer),
+        nameof(Timer.AddTask),
+        [typeof(Action), typeof(float), typeof(GameObject)])]
+    [HarmonyPrefix]
+    private static bool AddTask2(ref Action misson) {
+        if (!CutsceneSkip.SkippingCutscene) return true;
+
+        misson();
+        return false;
+    }*/
+
+    [HarmonyPatch(typeof(SimpleCutsceneManager), "PlayAnimation")]
+    [HarmonyPrefix]
+    private static void PlayAnimation(ref float speed) {
+        if (!CutsceneSkip.SkippingCutscene) return;
+
+        speed = 1000;
+    }
+
+    [HarmonyPatch(typeof(DialoguePlayer), "EndDialogue")]
+    [HarmonyPrefix]
+    private static bool Y() {
+        CutsceneSkip.EndSkipDialogue();
+        return true;
     }
 }

@@ -9,16 +9,15 @@
         <PublishRelease>true</PublishRelease>
         <NoWarn>MSB3277</NoWarn>
 
-
         <!-- todo macOS -->
         <NineSolsPath Condition="'$(OS)' == 'Windows_NT'">C:/Program Files (x86)/Steam/steamapps/common/Nine Sols</NineSolsPath>
         <NineSolsPath Condition="'$(OS)' != 'Windows_NT'">$(HOME)/.local/share/Steam/steamapps/common/Nine Sols</NineSolsPath>
-        
+
         <!-- If you're not using R2Modman/Thunderstore, this can be NineSolsPath as well. Only used in CopyDir -->
-        <ProfileDir Condition="'$(OS)' == 'Windows_NT'">C:/Users/$username/AppData/Roaming/r2modmanPlus-local/NineSols/profiles/Default</ProfileDir>
+        <ProfileDir Condition="'$(OS)' == 'Windows_NT'">C:/Users/Jakob/AppData/Roaming/r2modmanPlus-local/NineSols/profiles/Default</ProfileDir>
         <ProfileDir Condition="'$(OS)' != 'Windows_NT'">$(HOME)/.config/r2modmanPlus-local/NineSols/profiles/Default</ProfileDir>
         <!-- After building, copy the dll to this folder. Useful for hot-reloading: https://github.com/BepInEx/BepInEx.Debug/blob/master/README.md#scriptengine -->
-        <!--<CopyDir>$(ProfileDir)/BepInEx/scripts</CopyDir>-->
+        <CopyDir>$(ProfileDir)/BepInEx/scripts</CopyDir>
     </PropertyGroup>
 
     <ItemGroup>
@@ -34,22 +33,25 @@
         <Reference Include="InControl">
             <HintPath>$(NineSolsPath)/NineSols_Data/Managed/InControl.dll</HintPath>
         </Reference>
+        <Reference Include="UniTask">
+            <HintPath>$(NineSolsPath)/NineSols_Data/Managed/UniTask.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all" />
-        <PackageReference Include="BepInEx.Core" Version="5.*" />
-        <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*" />
-        <PackageReference Include="UnityEngine.Modules" Version="2022.3.18" IncludeAssets="compile" />
+        <PackageReference Include="BepInEx.Analyzers" Version="1.*" PrivateAssets="all"/>
+        <PackageReference Include="BepInEx.Core" Version="5.*"/>
+        <PackageReference Include="BepInEx.PluginInfoProps" Version="1.*"/>
+        <PackageReference Include="UnityEngine.Modules" Version="2022.3.18" IncludeAssets="compile"/>
 
         <!-- enable below if you want to use the API -->
-        <PackageReference Include="NineSolsAPI" Version="0.4.0" />
+        <PackageReference Include="NineSolsAPI" Version="0.4.0"/>
         <!-- or locally <ProjectReference Include="../../NineSolsAPI/NineSolsAPI/NineSolsAPI.csproj" />-->
     </ItemGroup>
 
     <Target Name="CopyMod" AfterTargets="PostBuildEvent" Condition="'$(CopyDir)' != ''">
-        <Message Importance="high" Text="copying $(TargetPath) to $(CopyDir) ..." />
-        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(CopyDir)" SkipUnchangedFiles="true" />
+        <Message Importance="high" Text="copying $(TargetPath) to $(CopyDir) ..."/>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(CopyDir)" SkipUnchangedFiles="true"/>
         <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(CopyDir)" SkipUnchangedFiles="true"/>
     </Target>
 
